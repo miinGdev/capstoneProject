@@ -1,0 +1,32 @@
+name: on_the_record
+description: A new Flutter project for On the Record
+
+# 앱 버전 및 빌드 번호
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.5
+
+  # 추가 패키지들 (필요 시 여기에 패키지 추가)
+  provider: ^6.0.5
+  intl: ^0.17.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+
