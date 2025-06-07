@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # on_the_record
 
 A new Flutter project.
@@ -15,6 +14,3 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
-=======
-# capstoneProject
->>>>>>> 0a61778d5e4daafdc35944eb65e2f4eb0671849a
