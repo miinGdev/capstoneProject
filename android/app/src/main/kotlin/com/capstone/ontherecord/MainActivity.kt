@@ -1,4 +1,4 @@
-package com.example.on_the_record
+package com.capstone.ontherecord
 
 import io.flutter.embedding.android.FlutterActivity
 

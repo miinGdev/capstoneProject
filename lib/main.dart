@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'firebase_options.dart';
 import 'package:on_the_record/screens/calendar_screen.dart';
 import 'screens/purpose_selection_screen.dart';
 import 'screens/chat_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'screens/login_screen.dart'; 
+import 'screens/home_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform, 
+  );
   runApp(MyApp());
 }
 
@@ -14,9 +22,10 @@ class MyApp extends StatelessWidget {
       title: 'On the Record',
       initialRoute: '/',
       routes: {
-        '/': (context) => const PurposeSelectionScreen(),
+        '/': (context) => const LoginScreen(),
         '/chat': (context) => const ChatScreen(),
         '/cal' : (context) => const CalendarScreen(),
+        '/home': (context) => const HomeScreen(),
       },
     );
   }

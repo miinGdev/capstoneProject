@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1026309981901",
+    "project_id": "capstone-e91f5",
+    "storage_bucket": "capstone-e91f5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1026309981901:android:d6603b1c7daeca1d7a4b84",
+        "android_client_info": {
+          "package_name": "com.capstone.ontherecord"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCb3h4GQnFely1mtvYs4-ey7Ypz3cRLyx8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
