@@ -6,6 +6,10 @@ import 'screens/chat_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'screens/login_screen.dart'; 
 import 'screens/home_screen.dart';
+import 'screens/signup_screen.dart';
+import 'screens/intro_screen.dart';
+import 'screens/purpose_selection_screen.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +28,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const LoginScreen(),
         '/chat': (context) => const ChatScreen(),
+        '/signup': (context) => const SignupScreen(),
         '/cal' : (context) => const CalendarScreen(),
         '/home': (context) => const HomeScreen(),
       },

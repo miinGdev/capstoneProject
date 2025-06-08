@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:html' as html;
-import 'home_screen.dart'; // 직접 이동할 화면
+import 'signup_screen.dart';
+import 'intro_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -29,10 +29,9 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => const IntroScreen()),
       );
     } catch (e) {
       setState(() {
@@ -43,12 +42,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void signInWithGoogle(BuildContext context) async {
     try {
-      var provider = GoogleAuthProvider();
-      await FirebaseAuth.instance.signInWithPopup(provider);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
+      final provider = GoogleAuthProvider();
+      final userCredential = await FirebaseAuth.instance.signInWithPopup(provider);
+
+      if (userCredential.user != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const IntroScreen()),
+          );
+        });
+      } else {
+        html.window.alert('로그인에 실패했어요 😢');
+      }
     } catch (e) {
       html.window.alert('구글 로그인 실패: \$e');
     }
@@ -94,6 +100,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       Text('구글 계정으로 로그인', style: TextStyle(color: Colors.black)),
                     ],
                   ),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SignupScreen()),
+                    );
+                  },
+                  child: const Text("계정이 없으신가요? 회원가입하기"),
                 ),
                 const SizedBox(height: 16),
                 Text(errorMessage, style: const TextStyle(color: Colors.red)),
