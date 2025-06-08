@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:on_the_record/screens/calendar_screen.dart';
 import 'screens/purpose_selection_screen.dart';
 import 'screens/chat_screen.dart';
 
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const PurposeSelectionScreen(),
         '/chat': (context) => const ChatScreen(),
+        '/cal' : (context) => const CalendarScreen(),
       },
     );
   }
