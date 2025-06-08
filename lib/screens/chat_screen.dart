@@ -14,7 +14,7 @@ class _ChatScreenState extends State<ChatScreen> {
   List<Map<String, dynamic>> messages = [];
   //List<Map<String, String>> messages = [{"role": "user", "content": "넌 user가 요청하는대로 말투랑 대답 형식을 맞춰야 돼."}];
 
-  String selectedTone = '집사';
+  //String selectedTone = '집사';
 
   /*Future<String> fetchRagResponse(String query) async {
     final uri = Uri.parse("http://210.125.91.93:8000/rag");
