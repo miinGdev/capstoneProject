@@ -26,11 +26,11 @@ class MyApp extends StatelessWidget {
       title: 'On the Record',
       initialRoute: '/',
       routes: {
-        '/': (context) => const LoginScreen(),
+        //'/': (context) => const LoginScreen(),
+        '/': (context) => const HomeScreen(),
         '/chat': (context) => const ChatScreen(),
         '/signup': (context) => const SignupScreen(),
         '/cal' : (context) => const CalendarScreen(),
-        '/home': (context) => const HomeScreen(),
       },
     );
   }

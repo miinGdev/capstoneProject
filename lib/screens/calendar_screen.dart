@@ -51,10 +51,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   // 날짜 탭 시 샘플 텍스트 분석 후 이모지 저장
   void _onDayTapped(int day) async {
-    final sampleText = "오늘 너무 힘들었어. 친구랑 다투고 과제도 많았어."; // 샘플
-    final emotion = await analyzeEmotion(sampleText);
+    // final sampleText = "오늘 너무 힘들었어. 친구랑 다투고 과제도 많았어."; // 샘플
+    // final emotion = await analyzeEmotion(sampleText);
     setState(() {
-      emotionData[day] = emotionToEmoji(emotion);
+      emotionData[day] = "😐";
+      //emotionToEmoji(emotion)
     });
 
     // 일기 보기로 이동
@@ -76,7 +77,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         children: [
           const SizedBox(height: 16),
           Text(
-            "${now.month}월 ${now.year}",
+            "${now.year}년 ${now.month}월",
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
