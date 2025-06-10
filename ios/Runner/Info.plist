@@ -46,6 +46,8 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
-      <string>이 앱은 음성 인식을 위해 마이크를 사용합니다.</string>
+    <string>이 앱은 음성 인식을 위해 마이크를 사용합니다.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>이 앱은 음성 출력을 위해 음성 합성을 사용합니다.</string>
 </dict>
 </plist>

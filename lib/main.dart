@@ -7,6 +7,7 @@ import 'screens/intro_screen.dart';
 import 'screens/purpose_selection_screen.dart';
 import 'screens/setting_screen.dart';
 import 'screens/onboarding_screen.dart';
+import 'screens/userid_login_screen.dart';
 
 
 void main() {
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         '/cal' : (context) => const CalendarScreen(),
         '/set' : (context) => const SettingScreen(),
         '/onboarding' : (context) => const OnboardingScreen(),
+        '/login' : (context) => const NameInputScreen(),
       },
     );
   }
