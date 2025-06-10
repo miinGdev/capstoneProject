@@ -1,0 +1,11 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="24" height="24" fill="white"/>
+<mask id="path-1-inside-1_8_6" fill="white">
+<path d="M2 6.25C2 5.14543 2.89543 4.25 4 4.25H20C21.1046 4.25 22 5.14543 22 6.25V19.75C22 20.8546 21.1046 21.75 20 21.75H4C2.89543 21.75 2 20.8546 2 19.75V6.25Z"/>
+</mask>
+<path d="M4 4.25V5.25H20V4.25V3.25H4V4.25ZM22 6.25H21V19.75H22H23V6.25H22ZM20 21.75V20.75H4V21.75V22.75H20V21.75ZM2 19.75H3V6.25H2H1V19.75H2ZM4 21.75V20.75C3.44772 20.75 3 20.3023 3 19.75H2H1C1 21.4069 2.34315 22.75 4 22.75V21.75ZM22 19.75H21C21 20.3023 20.5523 20.75 20 20.75V21.75V22.75C21.6569 22.75 23 21.4069 23 19.75H22ZM20 4.25V5.25C20.5523 5.25 21 5.69772 21 6.25H22H23C23 4.59315 21.6569 3.25 20 3.25V4.25ZM4 4.25V3.25C2.34315 3.25 1 4.59315 1 6.25H2H3C3 5.69772 3.44772 5.25 4 5.25V4.25Z" fill="black" mask="url(#path-1-inside-1_8_6)"/>
+<path d="M12 6.75L12 3" stroke="black" stroke-linecap="round"/>
+<path d="M17 6.75L17 3" stroke="black" stroke-linecap="round"/>
+<path d="M7 6.75L7 3" stroke="black" stroke-linecap="round"/>
+<line x1="2" y1="10" x2="22" y2="10" stroke="black"/>
+</svg>

@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'calendar_screen.dart';
+import 'setting_screen.dart';
+
+import 'package:on_the_record/screens/calendar_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -33,13 +40,50 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }*/
 
+  late stt.SpeechToText _speech;
+  bool _isListening = false;
+  final FlutterTts _tts = FlutterTts();
+
+  @override
+  void initState() {
+    super.initState();
+    _speech = stt.SpeechToText();
+  }
+
+  void _listen() async {
+    if (!_isListening) {
+      bool available = await _speech.initialize();
+      if (available) {
+        setState(() => _isListening = true);
+        _speech.listen(
+          onResult: (result) {
+            setState(() {
+              _controller.text = result.recognizedWords;
+            });
+          },
+        );
+      }
+    } else {
+      setState(() => _isListening = false);
+      _speech.stop();
+    }
+  }
+
+  void _speak(String text) async {
+    await _tts.setLanguage("ko-KR");
+    await _tts.setPitch(1.0);
+    await _tts.setSpeechRate(0.9);
+    await _tts.speak(text);
+  }
+
   Future<void> sendMessage(String userMessage) async {
     setState(() {
       messages.add({"role": "user", "content": userMessage});
     });
 
     final response = await http.post(
-      Uri.parse("http://210.125.91.93:8000/rag-chat"), // 실제 서버 주소
+      Uri.parse("http://10.0.2.2:3000/chat"),
+      // Uri.parse("http://210.125.91.93:8000/rag-chat"), // 실제 서버 주소
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({"messages": messages}),
     );
@@ -84,6 +128,35 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // ✅ 왼쪽에 설정 아이콘 버튼 추가
+        /*leading: IconButton(
+          icon: const Icon(Icons.settings, color: Colors.black),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SettingScreen()),
+            );
+          },
+        ), */
+        // ✅ 오른쪽 캘린더 아이콘은 기존대로 유지
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: IconButton(
+              icon: SvgPicture.asset(
+                'assets/icon_calendar.svg',
+                width: 24,
+                height: 24,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CalendarScreen()),
+                );
+              },
+            ),
+          ),
+        ],
         title: const Text("GPT 챗봇"),
       ),
       body: Column(
@@ -104,17 +177,31 @@ class _ChatScreenState extends State<ChatScreen> {
                     padding: const EdgeInsets.all(10.0),
                     decoration: BoxDecoration(
                       color: isUser
-                          ? Colors.blueAccent.withOpacity(0.8)
+                          ? Colors.grey.shade200
                           : Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(16.0),
                     ),
-                    child: Text(
-                      isUser
-                          ? "${msg["content"]}"
-                          : "${msg["content"]}",
-                        style: TextStyle(
-                        color: isUser ? Colors.white : Colors.black,
-                      ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            msg["content"],
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                        if (!isUser) ...[
+                          const SizedBox(width: 8),
+                          IconButton(
+                            icon: const Icon(Icons.speaker, size: 20),
+                            onPressed: () => _speak(msg["content"]),
+                          ),
+                        ]
+                      ],
                     ),
                   ),
                 );
@@ -126,22 +213,54 @@ class _ChatScreenState extends State<ChatScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      hintText: "메시지를 입력하세요",
-                    ),
-                    onSubmitted: (_) => _sendMessage(),
+                Container(
+                  decoration: BoxDecoration(
+                    color: _isListening ? Colors.black : Colors.transparent,
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                      icon: const Icon(Icons.mic),
+                      color: _isListening ? Colors.white : Colors.black54,
+                      onPressed: _listen,
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: _sendMessage,
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: TextField(
+                      controller: _controller,
+                      decoration: InputDecoration(
+                        hintText: "메시지를 입력하세요",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20.0,
+                          vertical: 14.0,
+                        ),
+                      ),
+                      onSubmitted: (_) => _sendMessage(),
+                    ),
+                  ),
                 ),
-              ],
-            ),
-          ),
+                _isListening
+                  ? IconButton(
+                      icon: const Icon(Icons.stop_circle),
+                      tooltip: "음성인식 정지 및 전송",
+                      onPressed: () {
+                      _speech.stop();
+                      setState(() => _isListening = false);
+                      _sendMessage();
+                      _controller.clear();
+                      },
+                    )
+                    : IconButton(
+                      icon: const Icon(Icons.send),
+                      onPressed: _sendMessage,
+                    ),
+    ],
+    ),
+    ),
         ],
       ),
     );

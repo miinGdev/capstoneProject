@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:html' as html;
+import 'package:flutter/foundation.dart';
 import 'signup_screen.dart';
 import 'intro_screen.dart';
+
+//// import 'dart:html' as html;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -35,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } catch (e) {
       setState(() {
-        errorMessage = '로그인 실패: \$e';
+        errorMessage = '로그인 실패';
       });
     }
   }
@@ -43,7 +45,9 @@ class _LoginScreenState extends State<LoginScreen> {
   void signInWithGoogle(BuildContext context) async {
     try {
       final provider = GoogleAuthProvider();
-      final userCredential = await FirebaseAuth.instance.signInWithPopup(provider);
+
+
+
 
       if (userCredential.user != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
