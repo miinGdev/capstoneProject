@@ -3,14 +3,23 @@
 Flutter 기반 크로스 플랫폼 애플리케이션입니다.  
 본 프로젝트는 Android, iOS, Web, Windows 등 다양한 운영체제에서 실행 가능하며, Firebase를 이용한 인증 및 클라우드 데이터 연동 기능을 포함합니다.
 
+**멀티 플랫폼** 대응, **실시간 감정 분석 및 대화 요약**, **GPT 파인튜닝 말투 대응** 등을 구현했습니다.
+
 ---
 
-## 🚀 주요 기능
+## 🚀 핵심 기능
 
-- Firebase 연동 (인증, 데이터 저장 등)
-- 크로스 플랫폼 지원 (Android, iOS, Web, Windows)
-- 직관적인 UI 구성
-- Flutter로 구축된 반응형 앱
+### 🔹 프론트엔드 (Flutter)
+- Firebase를 활용한 사용자 인증 (Google 로그인 등)
+- 반응형 UI (Android, iOS, Web, Windows 대응)
+- 말투 선택 기능 (ex: 집사, 시크, 츤데레 등 6가지 말투)
+- 요약/감정 분석 기능 연동
+
+### 🔹 백엔드 (FastAPI)
+- GPT-4o 기반 챗봇 API (`/chat`)
+- GPT-4o 요약봇 API (`/summary`)
+- 말투별 system 프롬프트 적용 (`tone_prompts`)
+- RAG/FAISS (선택적 구성) 통한 밈/사투리 처리 가능
 
 ---
 
@@ -50,21 +59,48 @@ flutter run
 
 ---
 
+## 💬 사용 가능한 말투 목록
+
+- 귀여운
+- 집사
+- 시크
+- 집착
+- 츤데레  
+- 오타쿠
+- 경상도 사투리
+- 전라도 사투리
+- 최신 밈 말투
+
+> 원하는 말투가 없다면 `"기본"`으로 설정되어 자연스럽게 응답합니다.
+
+---
+
 ## 📌 기술 스택
 
-- Flutter / Dart
-- Firebase (Authentication, Firestore 등)
-- 플랫폼: Android, iOS, Web, Windows
+## 프론트엔드 
+- Flutter / Dart / Firebase
+
+## 백엔드
+- Python
+- httpx
+- FastAPI
+- node.js
+- mongo DB
+
+## AI
+- OpenAI GPT 4o
+- RAG+FAISS
+- Sentence-Transformers
 
 ---
 
 ## 🧑‍💻 개발자
 
-- 팀명 또는 캡스톤 조 이름
-- 담당자 GitHub ID 등 (필요시 기입)
+- 성신팀
+- 강민지, 김예원, 김유리, 김채원, 문현수, 신하령, 황현정
 
 ---
 
 ## 📄 라이선스
 
-이 프로젝트는 MIT 라이선스를 따릅니다. (원하면 수정 가능)
+이 프로젝트는 MIT 라이선스를 따릅니다. 
