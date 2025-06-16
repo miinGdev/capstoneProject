@@ -18,8 +18,8 @@ Flutter 기반 크로스 플랫폼 애플리케이션입니다.
 ### 🔹 백엔드 (FastAPI)
 - GPT-4o 기반 챗봇 API (`/chat`)
 - GPT-4o 요약봇 API (`/summary`)
-- 말투별 system 프롬프트 적용 (`tone_prompts`)
-- RAG/FAISS (선택적 구성) 통한 밈/사투리 처리 가능
+- GPT-4o 파인튜닝 모델을 말투별로 분기하여 사용
+- RAG/FAISS 통한 밈/사투리 처리 가능
 
 ---
 
