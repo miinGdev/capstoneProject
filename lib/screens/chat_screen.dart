@@ -4,9 +4,9 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart'; // 👇 ID 저장용
 import 'calendar_screen.dart';
 import 'setting_screen.dart';
-
 import 'package:on_the_record/screens/calendar_screen.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -19,26 +19,6 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   TextEditingController _controller = TextEditingController();
   List<Map<String, dynamic>> messages = [];
-  //List<Map<String, String>> messages = [{"role": "user", "content": "넌 user가 요청하는대로 말투랑 대답 형식을 맞춰야 돼."}];
-
-  //String selectedTone = '집사';
-
-  /*Future<String> fetchRagResponse(String query) async {
-    final uri = Uri.parse("http://210.125.91.93:8000/rag");
-
-    final response = await http.post(
-      uri,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"query": query}),
-    );
-
-    if (response.statusCode == 200) {
-      final json = jsonDecode(utf8.decode(response.bodyBytes));
-      return json["response"];
-    } else {
-      return "❌ 오류: ${response.statusCode}";
-    }
-  }*/
 
   late stt.SpeechToText _speech;
   bool _isListening = false;
@@ -81,41 +61,38 @@ class _ChatScreenState extends State<ChatScreen> {
       messages.add({"role": "user", "content": userMessage});
     });
 
-    final response = await http.post(
-      Uri.parse("http://10.0.2.2:3000/chat"),
-      // Uri.parse("http://210.125.91.93:8000/rag-chat"), // 실제 서버 주소
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"messages": messages}),
-    );
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedUserId = prefs.getString("user_id");
+      // final savedDiaryDate = prefs.getString("diary_date");
 
-    if (response.statusCode == 200) {
-      final decoded = jsonDecode(utf8.decode(response.bodyBytes));
+      if (savedUserId == null || savedUserId.isEmpty) {
+        print("❌ user_id 없음. 로그인 정보 확인 필요");
+        return;
+      }
 
-      setState(() {
-        messages.add({"role": "assistant", "content": decoded["response"]});
-      });
-    } else {
-      print("❌ 서버 응답 실패: ${response.body}");
+      final response = await http.post(
+        Uri.parse("http://210.125.91.93:3000/chat"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "user_id": savedUserId,
+          // "diary_date": savedDiaryDate,
+          "message": userMessage
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(utf8.decode(response.bodyBytes));
+        setState(() {
+          messages.add({"role": "assistant", "content": decoded["reply"]});
+        });
+      } else {
+        print("❌ 서버 응답 실패: \${response.body}");
+      }
+    } catch (e) {
+      print("❌ 예외 발생: \$e");
     }
   }
-
-
-  /*void _sendMessage() async {
-    if (_controller.text.isEmpty) return;
-
-    final userInput = _controller.text;
-
-    setState(() {
-      messages.add({"role": "user", "content": userInput});
-      _controller.clear();
-    });
-
-    final reply = await fetchRagMessage(userInput);
-
-    setState(() {
-      messages.add({"role": "assistant", "content": reply});
-    });
-  }*/
 
   void _sendMessage() {
     if (_controller.text.isEmpty) return;
@@ -128,17 +105,6 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // ✅ 왼쪽에 설정 아이콘 버튼 추가
-        /*leading: IconButton(
-          icon: const Icon(Icons.settings, color: Colors.black),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const SettingScreen()),
-            );
-          },
-        ), */
-        // ✅ 오른쪽 캘린더 아이콘은 기존대로 유지
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -197,7 +163,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         if (!isUser) ...[
                           const SizedBox(width: 8),
                           IconButton(
-                            icon: const Icon(Icons.speaker, size: 20),
+                            icon: const Icon( Icons.volume_up),
                             onPressed: () => _speak(msg["content"]),
                           ),
                         ]
@@ -219,9 +185,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
-                      icon: const Icon(Icons.mic),
-                      color: _isListening ? Colors.white : Colors.black54,
-                      onPressed: _listen,
+                    icon: const Icon(Icons.mic),
+                    color: _isListening ? Colors.white : Colors.black54,
+                    onPressed: _listen,
                   ),
                 ),
                 Expanded(
@@ -244,23 +210,23 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ),
                 _isListening
-                  ? IconButton(
-                      icon: const Icon(Icons.stop_circle),
-                      tooltip: "음성인식 정지 및 전송",
-                      onPressed: () {
-                      _speech.stop();
-                      setState(() => _isListening = false);
-                      _sendMessage();
-                      _controller.clear();
-                      },
-                    )
+                    ? IconButton(
+                  icon: const Icon(Icons.stop_circle),
+                  tooltip: "음성인식 정지 및 전송",
+                  onPressed: () {
+                    _speech.stop();
+                    setState(() => _isListening = false);
+                    _sendMessage();
+                    _controller.clear();
+                  },
+                )
                     : IconButton(
-                      icon: const Icon(Icons.send),
-                      onPressed: _sendMessage,
-                    ),
-    ],
-    ),
-    ),
+                  icon: const Icon(Icons.send),
+                  onPressed: _sendMessage,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

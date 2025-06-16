@@ -1,49 +1,45 @@
+//diaryDate를 받아와서 node.js에 diary 요청 -> diary받아와서 diaryDate에 맞도록 출력
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DiaryScreen extends StatefulWidget {
   final int day;
+  final DateTime diaryDate; // 날짜 전달 추가
 
-  const DiaryScreen({super.key, required this.day});
+  const DiaryScreen({super.key, required this.day, required this.diaryDate});
 
   @override
   State<DiaryScreen> createState() => _DiaryScreenState();
 }
 
 class _DiaryScreenState extends State<DiaryScreen> {
-  String summary = "요약을 불러오는 중...";
+  String summary = "일기를 불러오는 중...";
   bool isEditing = false;
   late TextEditingController _controller;
 
-  final List<List<String>> history = [
-    ["user", "오늘은 기분이 아주 좋았다. 친구와 점심을 함께 했다."],
-    ["assistant", "그랬구나! 기분 좋았겠다!"],
-    ["user", "맞아. 날씨도 좋았어."]
-  ];
+  Future<void> fetchDiary() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString("user_id") ?? "unknown";
 
-  Future<void> fetchSummary() async {
-    final uri = Uri.parse("http://210.125.91.93:8000/summary");
+    final date = "${widget.diaryDate.year.toString().padLeft(4, '0')}-"
+        "${widget.diaryDate.month.toString().padLeft(2, '0')}-"
+        "${widget.diaryDate.day.toString().padLeft(2, '0')}";
 
-    final response = await http.post(
-      uri,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({
-        "message": "무시됨",
-        "tone": "기본",
-        "history": history
-      }),
-    );
+    final uri = Uri.parse("http://210.125.91.93:3000/diary?user_id=$userId&date=$date");
 
+    final response = await http.get(uri);
     if (response.statusCode == 200) {
       final data = jsonDecode(utf8.decode(response.bodyBytes));
       setState(() {
-        summary = data["response"];
+        summary = data["diary"];
         _controller = TextEditingController(text: summary);
       });
     } else {
       setState(() {
-        summary = "❌ 요약 실패: ${response.statusCode}";
+        summary = "❌ 일기 불러오기 실패: ${response.statusCode}";
         _controller = TextEditingController(text: summary);
       });
     }
@@ -52,8 +48,8 @@ class _DiaryScreenState extends State<DiaryScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(); // 초기화 (fetch 전용)
-    fetchSummary();
+    _controller = TextEditingController();
+    fetchDiary();
   }
 
   @override
@@ -66,7 +62,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.day}일의 일기"),
+        title: Text("${widget.diaryDate.year}-${widget.diaryDate.month.toString().padLeft(2, '0')}-${widget.diaryDate.day.toString().padLeft(2, '0')} 일기"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -87,17 +83,18 @@ class _DiaryScreenState extends State<DiaryScreen> {
                   ),
                   style: const TextStyle(fontSize: 18),
                 ),
-              ) else
-                Expanded(
-                    child: SingleChildScrollView(
-                      child: Text(
-                        summary,
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
+              )
+            else
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Text(
+                    summary,
+                    style: const TextStyle(fontSize: 18),
+                  ),
                 ),
-              ],
-            ),
+              ),
+          ],
+        ),
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -108,11 +105,11 @@ class _DiaryScreenState extends State<DiaryScreen> {
             onPressed: () {
               setState(() {
                 if (isEditing) {
-                  summary = _controller.text; // 저장
+                  summary = _controller.text;
                 } else {
                   _controller.text = summary;
                 }
-                isEditing = !isEditing; // 모드 전환
+                isEditing = !isEditing;
               });
             },
             style: ButtonStyle(

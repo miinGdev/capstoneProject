@@ -24,12 +24,12 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         //'/': (context) => const LoginScreen(),
-        '/': (context) => const HomeScreen(),
+        //'/': (context) => const HomeScreen(),
         '/chat': (context) => const ChatScreen(),
         '/cal' : (context) => const CalendarScreen(),
         '/set' : (context) => const SettingScreen(),
         '/onboarding' : (context) => const OnboardingScreen(),
-        '/login' : (context) => const NameInputScreen(),
+        '/' : (context) => const NameInputScreen(),
       },
     );
   }
